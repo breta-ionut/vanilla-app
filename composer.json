@@ -9,5 +9,17 @@
             "email": "breta.ionut@gmail.com"
         }
     ],
-    "require": {}
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "symfony/dependency-injection": "^5.2",
+        "symfony/http-foundation": "^5.2",
+        "symfony/serializer": "^5.2",
+        "symfony/validator": "^5.2",
+        "symfony/config": "^5.2"
+    }
 }
