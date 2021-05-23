@@ -1,0 +1,13 @@
+{
+    "name": "ionutbreta/vanilla",
+    "description": "A sandbox application built with vanilla PHP and JavaScript.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ionut Breta",
+            "email": "breta.ionut@gmail.com"
+        }
+    ],
+    "require": {}
+}
