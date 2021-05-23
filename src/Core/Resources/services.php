@@ -2,6 +2,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use App\Core\Kernel\ControllerResolver;
 use App\Core\Routing\Router;
 use App\Core\Templating\TemplateEngine;
 
@@ -12,9 +13,15 @@ return function (ContainerConfigurator $configurator): void {
 
     $services = $configurator->services();
 
+    $services->set(ControllerResolver::class)
+        ->args([service('service_container')])
+        ->public();
+
     $services->set(Router::class)
-        ->args([param('kernel.routes_path')]);
+        ->args([param('kernel.routes_path')])
+        ->public();
 
     $services->set(TemplateEngine::class)
-        ->args([param('kernel.templates_path')]);
+        ->args([param('kernel.templates_path')])
+        ->public();
 };
