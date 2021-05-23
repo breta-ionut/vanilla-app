@@ -33,8 +33,7 @@ class Router
                 continue;
             }
 
-            \preg_match_all($route->getPattern(), $path, $matches);
-            if (0 === \count($matches)) {
+            if (!\preg_match_all($route->getPattern(), $path, $matches)) {
                 continue;
             }
 
