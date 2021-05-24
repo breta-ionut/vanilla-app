@@ -74,7 +74,7 @@ return function (ContainerConfigurator $configurator): void {
     $services->set(ValidatorInterface::class)
         ->factory([
             inline_service(ValidatorBuilder::class)
-                ->factory([Validation::class, 'createValidator'])
+                ->factory([Validation::class, 'createValidatorBuilder'])
                 ->call('addMethodMapping', ['loadValidationConstraints']),
             'getValidator',
         ]);

@@ -61,7 +61,7 @@ class Kernel
         $loader->load('src/Core/Resources/services.php');
         $loader->load('config/services.php');
 
-        $container->compile();
+        $container->compile(true);
 
         return $container;
     }
