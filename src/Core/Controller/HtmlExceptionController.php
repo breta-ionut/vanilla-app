@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Controller;
 
+use App\Core\Error\ErrorPage;
 use App\Core\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,23 +19,12 @@ class HtmlExceptionController extends AbstractController implements ExceptionCon
             return $this->render($this->container->getParameter('kernel.error_template'), \compact($exception, $debug));
         }
 
-        $errorMessage = $debug ? (string) $exception : 'Oops! An error occurred :(';
-        $content = <<<HTML
-<!DOCTYPE html>
-<head>
-    <title>Error</title>
-</head>
-<body>
-    <h1>Error</h1>
-
-    <p>$errorMessage</p>
-</body>
-HTML;
+        $content = new ErrorPage((string) $exception, $debug);
 
         $status = $exception instanceof HttpExceptionInterface
             ? $exception->getStatus()
             : Response::HTTP_INTERNAL_SERVER_ERROR;
 
-        return new Response($content, $status);
+        return new Response((string) $content, $status);
     }
 }
