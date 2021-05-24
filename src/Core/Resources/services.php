@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use App\Core\Database\AbstractRepository;
 use App\Core\Kernel\ControllerResolver;
 use App\Core\Routing\Router;
 use App\Core\Templating\TemplateEngine;
@@ -29,12 +30,18 @@ use Symfony\Component\Validator\ValidatorBuilder;
 return function (ContainerConfigurator $configurator): void {
     $configurator->parameters()
         ->set('kernel.routes_path', param('kernel.project_dir') . '/config/routes.php')
-        ->set('kernel.templates_path', param('kernel.project_dir') . '/templates');
+        ->set('kernel.templates_path', param('kernel.project_dir') . '/templates')
+        ->set('database.host', '')
+        ->set('database.port', '3306')
+        ->set('database.name', '')
+        ->set('database.user', '')
+        ->set('database.password', '');
 
     $services = $configurator->services();
 
     $services->defaults()->public();
 
+    // Kernel.
     $services->set(ControllerResolver::class)->args([service('service_container')]);
     $services->set(Router::class)->args([param('kernel.routes_path')]);
 
@@ -71,4 +78,19 @@ return function (ContainerConfigurator $configurator): void {
                 ->call('addMethodMapping', ['loadValidationConstraints']),
             'getValidator',
         ]);
+    // End of - Kernel.
+
+    // Database.
+    $services->set(\PDO::class)
+        ->args([
+            'mysql:host='.param('database.host').'; port='.param('database.port').'; dbname='.param('database.name'),
+            param('database.user'),
+            param('database.password'),
+        ])
+        ->call('setAttribute', [\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION]);
+
+    $services->set(AbstractRepository::class)
+        ->args([param(\PDO::class)])
+        ->abstract();
+    // End of - Database.
 };
