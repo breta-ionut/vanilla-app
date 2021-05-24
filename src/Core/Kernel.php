@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\Core\Controller\ExceptionControllerInterface;
+use App\Core\Error\ErrorHandler;
 use App\Core\Kernel\ControllerResolver;
 use App\Core\Routing\Route;
 use App\Core\Routing\Router;
@@ -41,6 +42,7 @@ class Kernel
             return;
         }
 
+        ErrorHandler::register($this->debug);
         $this->container = $this->createContainer();
 
         $this->booted = true;
