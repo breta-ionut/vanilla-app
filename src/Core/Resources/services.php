@@ -23,6 +23,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\ValidatorBuilder;
@@ -75,7 +76,11 @@ return function (ContainerConfigurator $configurator): void {
         ->factory([
             inline_service(ValidatorBuilder::class)
                 ->factory([Validation::class, 'createValidatorBuilder'])
-                ->call('addMethodMapping', ['loadValidationConstraints']),
+                ->call('addMethodMapping', ['loadValidationConstraints'])
+                ->call(
+                    'setConstraintValidatorFactory',
+                    [inline_service(ContainerConstraintValidatorFactory::class)->args([service('service_container')])],
+                ),
             'getValidator',
         ]);
     // End of - Kernel.
