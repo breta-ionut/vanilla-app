@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Controller;
 
 use App\Core\Exception\BadInputExceptionInterface;
+use App\Core\Exception\ValidationException;
 use App\Core\Templating\TemplateEngine;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class AbstractController implements ContainerAwareInterface
 {
@@ -37,6 +39,17 @@ abstract class AbstractController implements ContainerAwareInterface
             return $this->get(SerializerInterface::class)->deserialize($request->getContent(), $type, 'json', $context);
         } catch (ExceptionInterface $exception) {
             throw new BadInputExceptionInterface(0, $exception);
+        }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function validate(object $object): void
+    {
+        $violations = $this->get(ValidatorInterface::class)->validate($object);
+        if (0 !== \count($violations)) {
+            throw new ValidationException($violations);
         }
     }
 
