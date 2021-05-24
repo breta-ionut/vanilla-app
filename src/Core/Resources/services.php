@@ -81,7 +81,7 @@ return function (ContainerConfigurator $configurator): void {
     // End of - Kernel.
 
     // Database.
-    $services->set(\PDO::class)
+    $services->set('database.connection', \PDO::class)
         ->args([
             'mysql:host='.param('database.host').'; port='.param('database.port').'; dbname='.param('database.name'),
             param('database.user'),
@@ -90,7 +90,7 @@ return function (ContainerConfigurator $configurator): void {
         ->call('setAttribute', [\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION]);
 
     $services->set(AbstractRepository::class)
-        ->args([param(\PDO::class)])
+        ->args([service('database.connection')])
         ->abstract();
     // End of - Database.
 };
