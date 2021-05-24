@@ -1,3 +1,8 @@
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
 # Docker commands.
 start:
 		docker-compose up -d
@@ -28,3 +33,8 @@ clean-hard:
 enter-back:
 		docker-compose exec php bash
 # End of - Backend commands.
+
+# MySQL commands.
+run-sql-migration:
+		docker-compose exec mysql /bin/sh -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} < /migrations/$(filter-out $@,$(MAKECMDGOALS)).sql'
+# End of - MySQL commands.
