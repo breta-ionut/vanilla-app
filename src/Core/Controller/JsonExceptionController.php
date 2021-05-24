@@ -30,9 +30,7 @@ class JsonExceptionController extends AbstractController implements ExceptionCon
         }
 
         if ($exception instanceof ApiExceptionInterface && $exception->hasData()) {
-            $extraData = $this->get(NormalizerInterface::class)->normalize($exception->getData());
-
-            $data = \array_merge($data, $extraData);
+            $data += $this->get(NormalizerInterface::class)->normalize($exception->getData());
         }
 
         return $this->toJson($data, [], $status);

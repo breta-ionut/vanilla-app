@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Core\Exception;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-class ValidationException extends \RuntimeException implements ApiExceptionInterface, NormalizableInterface
+class ValidationException extends \RuntimeException implements ApiExceptionInterface
 {
     public function __construct(
         private ConstraintViolationListInterface $violations,
@@ -37,15 +35,5 @@ class ValidationException extends \RuntimeException implements ApiExceptionInter
     public function getData(): mixed
     {
         return $this->violations;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function normalize(NormalizerInterface $normalizer, string $format = null, array $context = []): array
-    {
-        $violationsData = $normalizer->normalize($this->violations, $format, $context);
-
-        return ['violations' => $violationsData];
     }
 }
