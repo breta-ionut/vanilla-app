@@ -16,6 +16,7 @@
     },
     "require": {
         "php": "^8.0",
+        "ext-pdo": "*",
         "symfony/dependency-injection": "^5.2",
         "symfony/http-foundation": "^5.2",
         "symfony/serializer": "^5.2",
