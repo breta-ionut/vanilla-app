@@ -2,4 +2,9 @@
 
 declare(strict_types=1);
 
-return [];
+use App\Core\Routing\Route;
+use App\Frontend\Controller\IndexController;
+
+return [
+    new Route('app_frontend_index', '/^\//', IndexController::class),
+];
