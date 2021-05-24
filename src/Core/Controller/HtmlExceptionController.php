@@ -13,10 +13,10 @@ class HtmlExceptionController extends AbstractController implements ExceptionCon
 {
     public function error(Request $request, \Throwable $exception): Response
     {
-        $debug = $this->container->getParameter('kernel.debug');
+        $debug = $this->getParameter('kernel.debug');
 
         if ($this->container->hasParameter('kernel.error_template')) {
-            return $this->render($this->container->getParameter('kernel.error_template'), \compact($exception, $debug));
+            return $this->render($this->getParameter('kernel.error_template'), \compact($exception, $debug));
         }
 
         $content = new ErrorPage((string) $exception, $debug);

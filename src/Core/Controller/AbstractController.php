@@ -18,42 +18,46 @@ abstract class AbstractController implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
+    protected function getParameter(string $name): mixed
+    {
+        return $this->container->getParameter($name);
+    }
+
+    protected function get(string $id): object
+    {
+        return $this->container->get($id);
+    }
+
     /**
      * @throws BadInputExceptionInterface
      */
-    public function fromJson(Request $request, string $type, array $context = []): mixed
+    protected function fromJson(Request $request, string $type, array $context = []): mixed
     {
         try {
-            return $this->container
-                ->get(SerializerInterface::class)
-                ->deserialize($request->getContent(), $type, 'json', $context);
+            return $this->get(SerializerInterface::class)->deserialize($request->getContent(), $type, 'json', $context);
         } catch (ExceptionInterface $exception) {
             throw new BadInputExceptionInterface(0, $exception);
         }
     }
 
-    public function render(string $template, array $parameters = [], Response $response = null): Response
+    protected function render(string $template, array $parameters = [], Response $response = null): Response
     {
         if (null === $response) {
             $response = new Response();
         }
 
-        $content = $this->container
-            ->get(TemplateEngine::class)
-            ->render($template, $parameters);
+        $content = $this->get(TemplateEngine::class)->render($template, $parameters);
 
         return $response->setContent($content);
     }
 
-    public function toJson(
+    protected function toJson(
         mixed $data,
         array $context = [],
         int $status = Response::HTTP_OK,
         array $headers = [],
     ): JsonResponse {
-        $json = $this->container
-            ->get(SerializerInterface::class)
-            ->serialize($data, 'json', $context);
+        $json = $this->get(SerializerInterface::class)->serialize($data, 'json', $context);
 
         return new JsonResponse($json, $status, $headers, true);
     }
