@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Core\Http;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-interface PreControllerCheckerInterface
+interface ControllerHooksInterface
 {
-    public const PRE_CONTROLLER_CHECKER = 'pre_controller_checker';
+    public const CONTROLLER_HOOKS = 'controller_hooks';
 
-    public function check(Request $request): void;
+    public function preController(Request $request): void;
+
+    public function postController(Request $request, Response $response): void;
 }

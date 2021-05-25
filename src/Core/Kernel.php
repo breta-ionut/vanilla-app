@@ -6,7 +6,7 @@ namespace App\Core;
 
 use App\Core\Controller\ExceptionControllerInterface;
 use App\Core\Error\ErrorHandler;
-use App\Core\Http\PreControllerCheckerInterface;
+use App\Core\Http\ControllerHooksInterface;
 use App\Core\Kernel\ControllerResolver;
 use App\Core\Routing\Route;
 use App\Core\Routing\Router;
@@ -94,17 +94,32 @@ class Kernel
         $request->attributes->add($route->getParameters());
         $request->attributes->set('_route', $route);
 
-        if ($route->hasOption(PreControllerCheckerInterface::PRE_CONTROLLER_CHECKER)) {
-            $this->container
-                ->get($route->getOption(PreControllerCheckerInterface::PRE_CONTROLLER_CHECKER))
-                ->check($request);
+        $controllerHooks = $this->getControllerHooks($route);
+
+        if (null !== $controllerHooks) {
+            $controllerHooks->preController($request);
         }
 
         $controller = $this->container
             ->get(ControllerResolver::class)
             ->resolve($route);
 
-        return $controller($request);
+        $response = $controller($request);
+
+        if (null !== $controllerHooks) {
+            $controllerHooks->postController($request, $response);
+        }
+
+        return $response;
+    }
+
+    private function getControllerHooks(Route $route): ?ControllerHooksInterface
+    {
+        if ($route->hasOption(ControllerHooksInterface::CONTROLLER_HOOKS)) {
+            return $this->container->get($route->getOption(ControllerHooksInterface::CONTROLLER_HOOKS))
+        }
+
+        return null;
     }
 
     private function handleException(Request $request, \Throwable $exception): Response
