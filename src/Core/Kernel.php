@@ -90,13 +90,14 @@ class Kernel
             ->get(Router::class)
             ->match($request);
 
+        $request->attributes->add($route->getParameters());
         $request->attributes->set('_route', $route);
 
         $controller = $this->container
             ->get(ControllerResolver::class)
             ->resolve($route);
 
-        return $controller($request, $route->getParameters());
+        return $controller($request);
     }
 
     private function handleException(Request $request, \Throwable $exception): Response
