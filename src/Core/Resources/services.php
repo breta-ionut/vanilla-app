@@ -8,6 +8,8 @@ use App\Core\Database\AbstractRepository;
 use App\Core\Kernel\ControllerResolver;
 use App\Core\Routing\Router;
 use App\Core\Templating\TemplateEngine;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -69,6 +71,9 @@ return function (ContainerConfigurator $configurator): void {
     $services->alias(DenormalizerInterface::class, Serializer::class);
     $services->alias(EncoderInterface::class, Serializer::class);
     $services->alias(DecoderInterface::class, Serializer::class);
+
+    $services->set(Session::class);
+    $services->alias(SessionInterface::class, Session::class);
 
     $services->set(TemplateEngine::class)->args([param('kernel.templates_path')]);
 

@@ -6,6 +6,7 @@ namespace App\Core;
 
 use App\Core\Controller\ExceptionControllerInterface;
 use App\Core\Error\ErrorHandler;
+use App\Core\Http\PreControllerCheckerInterface;
 use App\Core\Kernel\ControllerResolver;
 use App\Core\Routing\Route;
 use App\Core\Routing\Router;
@@ -92,6 +93,12 @@ class Kernel
 
         $request->attributes->add($route->getParameters());
         $request->attributes->set('_route', $route);
+
+        if ($route->hasOption(PreControllerCheckerInterface::PRE_CONTROLLER_CHECKER)) {
+            $this->container
+                ->get($route->getOption(PreControllerCheckerInterface::PRE_CONTROLLER_CHECKER))
+                ->check($request);
+        }
 
         $controller = $this->container
             ->get(ControllerResolver::class)

@@ -55,6 +55,16 @@ class Route
         return $this->methods;
     }
 
+    public function hasOption(string $name): bool
+    {
+        return isset($this->options[$name]);
+    }
+
+    public function getOption(string $name): mixed
+    {
+        return $this->options[$name];
+    }
+
     public function getOptions(): array
     {
         return $this->options;
