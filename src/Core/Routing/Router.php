@@ -33,7 +33,7 @@ class Router
                 continue;
             }
 
-            if (!\preg_match_all($route->getPattern(), $path, $matches)) {
+            if (!\preg_match($route->getPattern(), $path, $matches)) {
                 continue;
             }
 
