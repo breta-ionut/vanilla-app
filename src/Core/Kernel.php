@@ -116,7 +116,7 @@ class Kernel
     private function getControllerHooks(Route $route): ?ControllerHooksInterface
     {
         if ($route->hasOption(ControllerHooksInterface::CONTROLLER_HOOKS)) {
-            return $this->container->get($route->getOption(ControllerHooksInterface::CONTROLLER_HOOKS))
+            return $this->container->get($route->getOption(ControllerHooksInterface::CONTROLLER_HOOKS));
         }
 
         return null;
