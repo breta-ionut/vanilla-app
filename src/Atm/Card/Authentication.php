@@ -46,14 +46,14 @@ class Authentication
     /**
      * @throws AuthorizationFailedException
      */
-    public function resume(): void
+    public function enable(): void
     {
         if (!$this->session->has('card') || !($card = $this->session->get('card') instanceof Card)) {
             throw new AuthorizationFailedException();
         }
 
         /** @var Card $card */
-        $card = $this->repository->findOneById($card->getId());
+        $card = $this->repository->findOneByIdLocked($card->getId());
         if (null === $card) {
             throw new AuthorizationFailedException();
         }
