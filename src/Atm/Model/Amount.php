@@ -18,7 +18,7 @@ class Amount
         return $this->amount;
     }
 
-    public static function loadValidationMetadata(ClassMetadata $metadata): void
+    public static function loadValidationConstraints(ClassMetadata $metadata): void
     {
         $metadata->addPropertyConstraint('amount', new GreaterThan(0));
     }
