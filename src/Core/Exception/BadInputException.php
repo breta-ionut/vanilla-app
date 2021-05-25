@@ -6,7 +6,7 @@ namespace App\Core\Exception;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class BadInputExceptionInterface extends \RuntimeException implements ApiExceptionInterface
+class BadInputException extends \RuntimeException implements ApiExceptionInterface
 {
     use NoDataApiExceptionTrait;
 

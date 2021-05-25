@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Controller;
 
-use App\Core\Exception\BadInputExceptionInterface;
+use App\Core\Exception\BadInputException;
 use App\Core\Exception\ValidationException;
 use App\Core\Templating\TemplateEngine;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -31,14 +31,14 @@ abstract class AbstractController implements ContainerAwareInterface
     }
 
     /**
-     * @throws BadInputExceptionInterface
+     * @throws BadInputException
      */
     protected function fromJson(Request $request, string $type, array $context = []): mixed
     {
         try {
             return $this->get(SerializerInterface::class)->deserialize($request->getContent(), $type, 'json', $context);
         } catch (ExceptionInterface $exception) {
-            throw new BadInputExceptionInterface(0, $exception);
+            throw new BadInputException(0, $exception);
         }
     }
 
