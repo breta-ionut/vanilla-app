@@ -48,9 +48,11 @@ class Authentication
      */
     public function enable(): void
     {
-        if (!$this->session->has('card') || !($card = $this->session->get('card') instanceof Card)) {
+        if (!$this->session->has('card') || !(($card = $this->session->get('card')) instanceof Card)) {
             throw new AuthorizationFailedException();
         }
+
+        $this->repository->beginTransaction();
 
         /** @var Card $card */
         $card = $this->repository->findOneByIdLocked($card->getId());
@@ -59,5 +61,10 @@ class Authentication
         }
 
         $this->storage->setCard($card);
+    }
+
+    public function suspend(): void
+    {
+        $this->repository->commit();
     }
 }

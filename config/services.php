@@ -6,7 +6,13 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use App\Atm\Card\Authentication;
 use App\Atm\Card\CardStorage;
+use App\Atm\Http\CardControllerHooks;
 use App\Atm\Repository\CardRepository;
+use App\Atm\Repository\TransactionRepository;
+use App\Atm\Transaction\AbstractHandler;
+use App\Atm\Transaction\DepositHandler;
+use App\Atm\Transaction\Handlers;
+use App\Atm\Transaction\WithdrawHandler;
 use App\Core\Database\AbstractRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -24,5 +30,27 @@ return function (ContainerConfigurator $configurator): void {
         ->public();
 
     $services->set(CardStorage::class);
+
+    $services->set(CardControllerHooks::class)
+        ->args([service(Authentication::class)])
+        ->public();
+
     $services->set(CardRepository::class)->parent(AbstractRepository::class);
+    $services->set(TransactionRepository::class)->parent(AbstractRepository::class);
+
+    $services->set(AbstractHandler::class)
+        ->args([service(CardStorage::class), service(CardRepository::class), service(TransactionRepository::class)])
+        ->abstract();
+
+    $services->set(DepositHandler::class)
+        ->parent(AbstractHandler::class)
+        ->public();
+
+    $services->set(WithdrawHandler::class)
+        ->parent(AbstractHandler::class)
+        ->public();
+
+    $services->set(Handlers::class)
+        ->args([service('service_container')])
+        ->public();
 };

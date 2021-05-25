@@ -9,9 +9,19 @@ use App\Core\Database\AbstractRepository;
 
 class CardRepository extends AbstractRepository
 {
-    public function findOneById(int $id): ?Card
+    public function beginTransaction(): void
     {
-        $stmt = $this->connection->prepare('SELECT * FROM cards WHERE id = :id');
+        $this->connection->beginTransaction();
+    }
+
+    public function commit(): void
+    {
+        $this->connection->commit();
+    }
+
+    public function findOneByIdLocked(int $id): ?Card
+    {
+        $stmt = $this->connection->prepare('SELECT * FROM cards WHERE id = :id FOR UPDATE');
         $stmt->execute([':id' => $id]);
 
         return $stmt->fetchObject(Card::class) ?? null;
@@ -23,5 +33,11 @@ class CardRepository extends AbstractRepository
         $stmt->execute([':holderName' => $holderName]);
 
         return $stmt->fetchObject(Card::class);
+    }
+
+    public function updateSold(Card $card): void
+    {
+        $stmt = $this->connection->prepare('UPDATE cards SET sold = :sold WHERE id = :id');
+        $stmt->execute([':sold' => $card->getSold(), ':id' => $card->getId()]);
     }
 }
